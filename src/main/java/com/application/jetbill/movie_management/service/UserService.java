@@ -1,15 +1,17 @@
 package com.application.jetbill.movie_management.service;
 
-import com.application.jetbill.movie_management.entity.User;
+import com.application.jetbill.movie_management.dto.request.SaveUser;
+import com.application.jetbill.movie_management.dto.response.GetUser;
+
 
 import java.util.List;
 
 public interface UserService {
 
-    List<User> findAll();
-    List<User> findAlByName(String name);
-    User findOneByUserName(String username);
-    User saveOne(User user);
-    User updateOneByUsername(String username, User user);
+    List<GetUser> findAll();
+    List<GetUser> findAllByName(String name);
+    GetUser findOneByUserName(String username);
+    GetUser saveOne(SaveUser userDto);
+    GetUser updateOneByUsername(String username, SaveUser userDto);
     void deleteOneByUsername(String username);
 }

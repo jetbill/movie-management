@@ -34,7 +34,7 @@ public class Movie {
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy/MM/dd - HH:mm:ss")
     @JsonProperty(value = "create-at")
-    @Column(updatable = false)
+    @Column(updatable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
     private LocalDateTime createAt;
 
     public LocalDateTime getCreateAt() {
@@ -45,7 +45,7 @@ public class Movie {
     }
 
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "movie")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "movie",cascade = CascadeType.ALL)
     @JsonManagedReference("movie-to-rating")
     private List<Rating> ratings;
 
