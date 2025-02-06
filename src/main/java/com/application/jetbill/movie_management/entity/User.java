@@ -25,7 +25,7 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference("user-to-rating")
     private List<Rating> ratings;
 

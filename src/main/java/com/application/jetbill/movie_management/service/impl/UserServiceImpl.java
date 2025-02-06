@@ -1,14 +1,19 @@
 package com.application.jetbill.movie_management.service.impl;
 
+import com.application.jetbill.movie_management.dto.request.SaveUser;
+import com.application.jetbill.movie_management.dto.response.GetUser;
 import com.application.jetbill.movie_management.entity.User;
+import com.application.jetbill.movie_management.exception.ObjectNotFoundException;
+import com.application.jetbill.movie_management.mappers.UserMapper;
 import com.application.jetbill.movie_management.repository.UserCrudRepository;
 import com.application.jetbill.movie_management.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
 
@@ -19,32 +24,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
-        return userCrudRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<GetUser> findAll() {
+        return UserMapper.toGetDtoList(userCrudRepository.findAll());
     }
 
     @Override
-    public List<User> findAlByName(String name) {
-        return userCrudRepository.findByName(name);
+    @Transactional(readOnly = true)
+    public List<GetUser> findAllByName(String name) {
+        return UserMapper.toGetDtoList(userCrudRepository.findByName(name));
     }
 
     @Override
-    public User findOneByUserName(String username) {
+    public GetUser findOneByUserName(String username) {
+        return UserMapper.toGetDto(this.findOneEntityByUsername(username));
+    }
+
+    @Transactional(readOnly = true)
+    public User findOneEntityByUsername(String username ) {
         return userCrudRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("[User:"+username+"] not found"));
+                .orElseThrow(() -> new ObjectNotFoundException("[User:"+username+"] not found"));
     }
 
     @Override
-    public User saveOne(User user) {
-        return userCrudRepository.save(user);
+    public GetUser saveOne(SaveUser userDto) {
+        User newUser = UserMapper.toEntity(userDto);
+        return UserMapper.toGetDto(userCrudRepository.save(newUser));
     }
 
     @Override
-    public User updateOneByUsername(String username, User user) {
-        User existing = findOneByUserName(username);
-        existing.setName(user.getName());
-        existing.setPassword(user.getPassword());
-        return userCrudRepository.save(existing);
+    public GetUser updateOneByUsername(String username, SaveUser userDto) {
+        User existing = this.findOneEntityByUsername(username);
+        UserMapper.updateUserToDto(existing, userDto);
+        return UserMapper.toGetDto(existing);
     }
 
     @Override
@@ -59,7 +71,7 @@ public class UserServiceImpl implements UserService {
         throw new RuntimeException("[User:"+username+"] not found");*/
         // opción : 2
         if(userCrudRepository.deleteByUsername(username)!= 1) {
-            throw new RuntimeException("[User:"+username+"] not found");
+            throw new ObjectNotFoundException("[User:"+username+"] not found");
         }
 
     }

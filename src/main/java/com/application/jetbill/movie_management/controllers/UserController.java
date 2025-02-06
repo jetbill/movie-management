@@ -1,12 +1,15 @@
 package com.application.jetbill.movie_management.controllers;
 
-import com.application.jetbill.movie_management.entity.User;
+import com.application.jetbill.movie_management.dto.request.SaveUser;
+import com.application.jetbill.movie_management.dto.response.GetUser;
+import com.application.jetbill.movie_management.exception.ObjectNotFoundException;
 import com.application.jetbill.movie_management.service.UserService;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,12 +22,47 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public List<User> getAllUsers() {
-        return userService.findAll();
+    @GetMapping
+    public ResponseEntity<List<GetUser>> findAllUsers() {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
-    @RequestMapping(method = RequestMethod.GET, value = "/{username}")
-    public User findOneByUsername(@PathVariable String username) {
-        return userService.findOneByUserName(username);
+    @GetMapping(value = "/{username}")
+    public ResponseEntity<GetUser> findOneByUsername(@PathVariable String username) {
+        try {
+            return ResponseEntity.ok(userService.findOneByUserName(username));
+        }catch (ObjectNotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<GetUser> createUser(@RequestBody SaveUser saveUserDto,
+                                              HttpServletRequest request) {
+        GetUser userCreated = userService.saveOne(saveUserDto);
+        String baseUrl = request.getRequestURL().toString();
+        URI newLocation = URI.create(baseUrl + "/" + userCreated.name());
+        return ResponseEntity.created(newLocation).body(userCreated);
+
+    }
+
+    @PutMapping("/{username}")
+    public ResponseEntity<GetUser> updateOneByUsername(@PathVariable String username,
+                                                       @RequestBody SaveUser saveUserDto) {
+        try{
+            GetUser userUpdated = userService.updateOneByUsername(username, saveUserDto);
+            return ResponseEntity.ok(userUpdated);
+        }catch (ObjectNotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+    @DeleteMapping(value = "/{username}")
+    public ResponseEntity<Void> deleteOneByUserName(@PathVariable String username){
+        try {
+            userService.deleteOneByUsername(username);
+            return ResponseEntity.noContent().build();
+        }catch (ObjectNotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 }
