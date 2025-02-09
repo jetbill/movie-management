@@ -7,6 +7,7 @@ import com.application.jetbill.movie_management.exception.ObjectNotFoundExceptio
 import com.application.jetbill.movie_management.mappers.UserMapper;
 import com.application.jetbill.movie_management.repository.UserCrudRepository;
 import com.application.jetbill.movie_management.service.UserService;
+import com.application.jetbill.movie_management.service.validator.PasswordValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,12 +49,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUser saveOne(SaveUser userDto) {
+        PasswordValidator.validatePassword(userDto.password(), userDto.passwordRepeated());
         User newUser = UserMapper.toEntity(userDto);
         return UserMapper.toGetDto(userCrudRepository.save(newUser));
     }
 
     @Override
     public GetUser updateOneByUsername(String username, SaveUser userDto) {
+        PasswordValidator.validatePassword(userDto.password(), userDto.passwordRepeated());
         User existing = this.findOneEntityByUsername(username);
         UserMapper.updateUserToDto(existing, userDto);
         return UserMapper.toGetDto(existing);

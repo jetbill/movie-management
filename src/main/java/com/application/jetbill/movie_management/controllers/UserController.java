@@ -5,6 +5,7 @@ import com.application.jetbill.movie_management.dto.response.GetUser;
 import com.application.jetbill.movie_management.exception.ObjectNotFoundException;
 import com.application.jetbill.movie_management.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<GetUser> createUser(@RequestBody SaveUser saveUserDto,
+    public ResponseEntity<GetUser> createUser(@Valid @RequestBody SaveUser saveUserDto,
                                               HttpServletRequest request) {
         GetUser userCreated = userService.saveOne(saveUserDto);
         String baseUrl = request.getRequestURL().toString();
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     @PutMapping("/{username}")
-    public ResponseEntity<GetUser> updateOneByUsername(@PathVariable String username,
+    public ResponseEntity<GetUser> updateOneByUsername(@Valid @PathVariable String username,
                                                        @RequestBody SaveUser saveUserDto) {
         try{
             GetUser userUpdated = userService.updateOneByUsername(username, saveUserDto);

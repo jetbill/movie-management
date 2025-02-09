@@ -9,6 +9,7 @@ import com.application.jetbill.movie_management.entity.enums.MovieGenre;
 import com.application.jetbill.movie_management.exception.ObjectNotFoundException;
 import com.application.jetbill.movie_management.service.MovieService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -59,7 +60,7 @@ public class MovieController {
     }
 
     @PostMapping
-    public ResponseEntity<GetMovie> createOne(@RequestBody SaveMovie movieDto,
+    public ResponseEntity<GetMovie> createOne(@RequestBody @Valid SaveMovie movieDto,
                                               HttpServletRequest request) {
 
         GetMovie movieCreated = movieService.createOne(movieDto);
@@ -70,7 +71,7 @@ public class MovieController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<GetMovie> updateOneById(@PathVariable Long id, @RequestBody SaveMovie movieDto) {
+    public ResponseEntity<GetMovie> updateOneById(@Valid @PathVariable Long id, @RequestBody SaveMovie movieDto) {
         try {
             GetMovie movieUpdated = movieService.updateOneById(id, movieDto);
             return ResponseEntity.ok(movieUpdated);
