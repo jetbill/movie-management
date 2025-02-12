@@ -3,6 +3,7 @@ package com.application.jetbill.movie_management.controllers;
 
 import com.application.jetbill.movie_management.dto.request.SaveMovie;
 import com.application.jetbill.movie_management.dto.request.SaveUser;
+import com.application.jetbill.movie_management.dto.response.ApiError;
 import com.application.jetbill.movie_management.dto.response.GetMovie;
 import com.application.jetbill.movie_management.entity.Movie;
 import com.application.jetbill.movie_management.entity.enums.MovieGenre;
@@ -17,6 +18,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Controller
@@ -90,5 +93,23 @@ public class MovieController {
             return ResponseEntity.notFound().build();
         }
 
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleGenericException(Exception exception,
+                                                           HttpServletRequest request
+                                                           ) {
+        int httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        ZoneId zoneId = ZoneId.of("America/Bogota");
+        LocalDateTime timestamps = LocalDateTime.now(zoneId);
+        ApiError apiError = new ApiError(
+                httpStatusCode,
+                request.getRequestURL().toString(),
+                request.getMethod(),
+                "Oops! something went wrong on our server. Please try again later.",
+                exception.getMessage(),
+                timestamps,
+                null
+        );
+        return ResponseEntity.status(httpStatusCode).body(apiError);
     }
 }
