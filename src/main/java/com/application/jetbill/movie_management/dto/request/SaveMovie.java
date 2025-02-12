@@ -16,7 +16,7 @@ public record SaveMovie(
         @NotBlank(message = "{generic.notblank}")
         String director,
         MovieGenre genre,
-        @Min(value = 1900, message = "generic.min")
+        @Min(value = 1900, message = "{generic.min}")
         @JsonProperty(value = "release_year")
         int releaseYear
 ) implements Serializable {
