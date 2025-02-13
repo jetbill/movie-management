@@ -1,7 +1,7 @@
 package com.application.jetbill.movie_management.mappers;
 
-import com.application.jetbill.movie_management.dto.request.SaveMovie;
-import com.application.jetbill.movie_management.dto.response.GetMovie;
+import com.application.jetbill.movie_management.dto.request.movie.SaveMovie;
+import com.application.jetbill.movie_management.dto.response.movie.GetMovie;
 import com.application.jetbill.movie_management.entity.Movie;
 
 import java.util.List;

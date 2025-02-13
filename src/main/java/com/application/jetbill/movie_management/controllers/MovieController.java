@@ -1,16 +1,18 @@
 package com.application.jetbill.movie_management.controllers;
 
 
-import com.application.jetbill.movie_management.dto.request.SaveMovie;
-import com.application.jetbill.movie_management.dto.request.SaveUser;
+import com.application.jetbill.movie_management.dto.request.movie.MovieSearchCriteria;
+import com.application.jetbill.movie_management.dto.request.movie.SaveMovie;
 import com.application.jetbill.movie_management.dto.response.ApiError;
-import com.application.jetbill.movie_management.dto.response.GetMovie;
-import com.application.jetbill.movie_management.entity.Movie;
+import com.application.jetbill.movie_management.dto.response.movie.GetMovie;
 import com.application.jetbill.movie_management.entity.enums.MovieGenre;
 import com.application.jetbill.movie_management.exception.ObjectNotFoundException;
 import com.application.jetbill.movie_management.service.MovieService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,31 +34,27 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetMovie>> findAll(@RequestParam (required = false) String title,
-                                                        @RequestParam(required = false) MovieGenre genre) {
-        List<GetMovie> movies = null;
-        if(StringUtils.hasText(title) && genre != null) {
-            movies = movieService.findAllByGenreAndTitle(genre, title);
-        } else if (StringUtils.hasText(title)) {
-            movies = movieService.findAllByTitle(title);
+    public ResponseEntity<Page<GetMovie>> findAll(@RequestParam (required = false) String title,
+                                                  @RequestParam(required = false) MovieGenre genre,
+                                                  @RequestParam (required = false) Integer releaseYear,
+                                                  @RequestParam (required = false, defaultValue = "0") Integer pageNumber,
+                                                  @RequestParam (required = false, defaultValue = "10") Integer pageSize) {
+        Pageable moviePageable = PageRequest.of(pageNumber, pageSize);
 
-        } else if (genre != null) {
-            movies = movieService.findAllByGenre(genre);
-        }else{
-            movies = movieService.findAll();
-        }
+        MovieSearchCriteria criteria = new MovieSearchCriteria(title, genre, releaseYear);
+        Page<GetMovie> movies = movieService.findAll(criteria, moviePageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(movies);
-        //return new ResponseEntity<>(movies, HttpStatus.OK);
+
     }
 
     @GetMapping(value = "/{id}")
      public ResponseEntity<GetMovie> findMovieById(@PathVariable Long id) {
         try {
             return ResponseEntity.status(200).body(movieService.findOneById(id));
-           // return ResponseEntity.ok(movieService.findOneById(id));
+
         } catch (ObjectNotFoundException e) {
-            //return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
             return ResponseEntity.notFound().build();
         }
 
@@ -94,22 +92,5 @@ public class MovieController {
         }
 
     }
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleGenericException(Exception exception,
-                                                           HttpServletRequest request
-                                                           ) {
-        int httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-        ZoneId zoneId = ZoneId.of("America/Bogota");
-        LocalDateTime timestamps = LocalDateTime.now(zoneId);
-        ApiError apiError = new ApiError(
-                httpStatusCode,
-                request.getRequestURL().toString(),
-                request.getMethod(),
-                "Oops! something went wrong on our server. Please try again later.",
-                exception.getMessage(),
-                timestamps,
-                null
-        );
-        return ResponseEntity.status(httpStatusCode).body(apiError);
-    }
+
 }

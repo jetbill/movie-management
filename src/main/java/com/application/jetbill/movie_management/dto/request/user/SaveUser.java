@@ -1,4 +1,4 @@
-package com.application.jetbill.movie_management.dto.request;
+package com.application.jetbill.movie_management.dto.request.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
