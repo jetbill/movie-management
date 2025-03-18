@@ -12,14 +12,14 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/movie-management
-    password: 3165880
+    url: jdbc:mysql://localhost:3306/moviesdb
+    password: jetbill123
     username: root
 
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     open-in-view: false
     show-sql: true
     defer-datasource-initialization: true

@@ -1,7 +1,7 @@
 package com.application.jetbill.movie_management.controllers;
 
-import com.application.jetbill.movie_management.dto.request.SaveUser;
-import com.application.jetbill.movie_management.dto.response.GetUser;
+import com.application.jetbill.movie_management.dto.request.user.SaveUser;
+import com.application.jetbill.movie_management.dto.response.user.GetUser;
 import com.application.jetbill.movie_management.exception.ObjectNotFoundException;
 import com.application.jetbill.movie_management.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;

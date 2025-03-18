@@ -1,4 +1,4 @@
-package com.application.jetbill.movie_management.dto.response;
+package com.application.jetbill.movie_management.dto.response.movie;
 
 import com.application.jetbill.movie_management.entity.enums.MovieGenre;
 import com.fasterxml.jackson.annotation.JsonProperty;

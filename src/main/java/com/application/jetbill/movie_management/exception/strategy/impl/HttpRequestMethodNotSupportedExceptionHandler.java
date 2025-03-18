@@ -13,7 +13,6 @@ public class HttpRequestMethodNotSupportedExceptionHandler implements ExceptionH
     public ResponseEntity<ApiError> handleException(Exception exception,
                                                     HttpServletRequest request,
                                                     LocalDateTime timestamps) {
-
         int httpStatusCode = HttpStatus.METHOD_NOT_ALLOWED.value();
 
         ApiError apiError = new ApiError(
@@ -25,7 +24,6 @@ public class HttpRequestMethodNotSupportedExceptionHandler implements ExceptionH
                 timestamps,
                 null
         );
-
 
         return ResponseEntity.status(httpStatusCode).body(apiError);
     }

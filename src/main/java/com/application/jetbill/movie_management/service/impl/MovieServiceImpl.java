@@ -1,15 +1,18 @@
 package com.application.jetbill.movie_management.service.impl;
 
-import com.application.jetbill.movie_management.dto.request.SaveMovie;
-import com.application.jetbill.movie_management.dto.response.GetMovie;
+import com.application.jetbill.movie_management.dto.request.movie.MovieSearchCriteria;
+import com.application.jetbill.movie_management.dto.request.movie.SaveMovie;
+import com.application.jetbill.movie_management.dto.response.movie.GetMovie;
 import com.application.jetbill.movie_management.entity.Movie;
 import com.application.jetbill.movie_management.entity.enums.MovieGenre;
 import com.application.jetbill.movie_management.exception.ObjectNotFoundException;
 import com.application.jetbill.movie_management.mappers.MovieMapper;
 import com.application.jetbill.movie_management.repository.MovieCrudRepository;
+import com.application.jetbill.movie_management.repository.specification.FindAllMoviesSpecification;
 import com.application.jetbill.movie_management.service.MovieService;
 
-import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,29 +29,15 @@ public class MovieServiceImpl implements MovieService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<GetMovie> findAll() {
-        return  MovieMapper.toGetDtoList(movieCrudRepository.findAll());
+    public Page<GetMovie> findAll(MovieSearchCriteria movieSearchCriteria, Pageable pageable) {
+        FindAllMoviesSpecification moviesSpecification = new FindAllMoviesSpecification(movieSearchCriteria);
+        Page<Movie> entities = movieCrudRepository.findAll(moviesSpecification, pageable);
+        return entities.map(MovieMapper::toGetDto);
+
 
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<GetMovie> findAllByTitle(String title) {
 
-        return MovieMapper.toGetDtoList(movieCrudRepository.findByTitleContaining(title));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<GetMovie> findAllByGenre(MovieGenre movieGenre) {
-        return MovieMapper.toGetDtoList(movieCrudRepository.findByGenre(movieGenre));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<GetMovie> findAllByGenreAndTitle(MovieGenre movieGenre, String title) {
-        return MovieMapper.toGetDtoList(movieCrudRepository.findByGenreAndTitleContaining(movieGenre, title));
-    }
 
     @Override
     public GetMovie createOne(SaveMovie saveDto) {

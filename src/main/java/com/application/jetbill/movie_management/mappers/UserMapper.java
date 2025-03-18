@@ -1,7 +1,7 @@
 package com.application.jetbill.movie_management.mappers;
 
-import com.application.jetbill.movie_management.dto.request.SaveUser;
-import com.application.jetbill.movie_management.dto.response.GetUser;
+import com.application.jetbill.movie_management.dto.request.user.SaveUser;
+import com.application.jetbill.movie_management.dto.response.user.GetUser;
 import com.application.jetbill.movie_management.entity.User;
 
 import java.util.List;
