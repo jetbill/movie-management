@@ -1,5 +1,8 @@
 package com.application.jetbill.movie_management.exception;
 
+import lombok.Getter;
+
+@Getter
 public class InvalidPasswordException extends RuntimeException{
 
     private final String password;
@@ -16,16 +19,6 @@ public class InvalidPasswordException extends RuntimeException{
         this.password = password;
         this.passwordRepeated =  password;
         this.errorDescription = errorDescription;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-    public String getPasswordRepeated() {
-        return passwordRepeated;
-    }
-    public String getErrorDescription() {
-        return errorDescription;
     }
 
     @Override

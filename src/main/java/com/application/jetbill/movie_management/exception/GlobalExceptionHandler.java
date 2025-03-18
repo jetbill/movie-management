@@ -51,8 +51,12 @@ public class GlobalExceptionHandler {
                                                         HttpServletRequest request){
         ZoneId zoneId = ZoneId.of("America/Bogota");
         LocalDateTime timestamps = LocalDateTime.now(zoneId);
-        ExceptionHandlerStrategy handlerStrategy = exceptionHandlerStrategies.getOrDefault(exception.getClass(), new GeneralExceptionHandler());
-        return handlerStrategy.handleException(exception, request, timestamps);
+        try {
+            ExceptionHandlerStrategy handlerStrategy = exceptionHandlerStrategies.getOrDefault(exception.getClass(), new GeneralExceptionHandler());
+            return handlerStrategy.handleException(exception, request, timestamps);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }

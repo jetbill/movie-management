@@ -65,14 +65,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteOneByUsername(String username) {
 
-        /*
-        opción : 1
-        if(userCrudRepository.findByUsername(username).isPresent()){
-            userCrudRepository.deleteByUsername(username);
-            return;
-        }
-        throw new RuntimeException("[User:"+username+"] not found");*/
-        // opción : 2
         if(userCrudRepository.deleteByUsername(username)!= 1) {
             throw new ObjectNotFoundException("[User:"+username+"] not found");
         }

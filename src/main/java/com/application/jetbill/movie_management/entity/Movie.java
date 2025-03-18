@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Entity
+@Entity(name = "movie")
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

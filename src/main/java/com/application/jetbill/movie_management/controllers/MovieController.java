@@ -36,12 +36,14 @@ public class MovieController {
     @GetMapping
     public ResponseEntity<Page<GetMovie>> findAll(@RequestParam (required = false) String title,
                                                   @RequestParam(required = false) MovieGenre genre,
-                                                  @RequestParam (required = false) Integer releaseYear,
+                                                  @RequestParam (required = false, name = "min_release_year") Integer minReleaseYear,
+                                                  @RequestParam (required = false, name = "max_release_year") Integer maxReleaseYear,
+                                                  @RequestParam (required = false, name = "min_average_rating") Integer minAverageRating,
                                                   @RequestParam (required = false, defaultValue = "0") Integer pageNumber,
                                                   @RequestParam (required = false, defaultValue = "10") Integer pageSize) {
         Pageable moviePageable = PageRequest.of(pageNumber, pageSize);
 
-        MovieSearchCriteria criteria = new MovieSearchCriteria(title, genre, releaseYear);
+        MovieSearchCriteria criteria = new MovieSearchCriteria(title, genre, minReleaseYear, maxReleaseYear, minAverageRating);
         Page<GetMovie> movies = movieService.findAll(criteria, moviePageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(movies);

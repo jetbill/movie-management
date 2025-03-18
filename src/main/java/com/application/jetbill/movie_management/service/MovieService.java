@@ -11,9 +11,6 @@ import java.util.List;
 
 public interface MovieService {
     Page<GetMovie> findAll(MovieSearchCriteria movieSearchCriteria, Pageable pageable);
-    //List<GetMovie> findAllByTitle(String title);
-    //List<GetMovie> findAllByGenre(MovieGenre movieGenre);
-    //List<GetMovie> findAllByGenreAndTitle(MovieGenre movieGenre, String title);
     GetMovie createOne(SaveMovie movieDto);
     GetMovie updateOneById(Long id, SaveMovie movieDto);
     void deleteOneById(Long id);
